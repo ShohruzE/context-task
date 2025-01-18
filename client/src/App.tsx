@@ -1,11 +1,13 @@
-import CreateCourseForm from "./components/CreateCourseForm";
+import Courses from "./components/Courses";
+import Home from "./Home";
+import { Routes, Route } from "react-router";
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold mb-8">Create a Course</h1>
-      <CreateCourseForm />
-    </div>
+    <Routes>
+      <Route path="/" index element={<Home />} />
+      <Route path="courses" element={<Courses />} />
+    </Routes>
   );
 }
 

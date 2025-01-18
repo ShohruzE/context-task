@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function CreateCourseForm() {
   const [formData, setFormData] = useState({
@@ -7,6 +8,8 @@ export default function CreateCourseForm() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   function handleChange(
     e:
@@ -52,6 +55,7 @@ export default function CreateCourseForm() {
       return;
     } finally {
       setLoading(false);
+      navigate("/courses");
     }
   }
 
