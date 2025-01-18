@@ -10,6 +10,34 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    topics: [
+      {
+        title: {
+          type: String,
+          required: true,
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+        lessons: [
+          {
+            title: {
+              type: String,
+              required: true,
+            },
+            description: {
+              type: String,
+              required: true,
+            },
+            content: {
+              type: String,
+              required: true,
+            },
+          },
+        ],
+      },
+    ],
   },
   { timestamps: true }
 );

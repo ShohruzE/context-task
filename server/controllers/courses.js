@@ -93,10 +93,10 @@ export const createCourse = async (req, res) => {
                 Content: "This lesson introduces Artificial Intelligence and explains its basic principles, history, and types (narrow AI vs. general AI)."
     `;
 
-    console.log(req.body);
+    // console.log(req.body);
 
     const { title, description } = req.body;
-    console.log(title, description);
+    // console.log(title, description);
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -118,11 +118,15 @@ export const createCourse = async (req, res) => {
       ],
       response_format: zodResponseFormat(courseStructureZodSchema, "course"),
     });
-    console.log(completion);
+    // console.log(completion);
     const response = completion.choices[0].message.parsed;
-    console.log(response);
+    // console.log(response);
 
-    res.status(201).json(response);
+    // Save to mongodb
+    const newCourse = await Course.create(response);
+    // console.log(newCourse);
+
+    res.status(201).json(newCourse);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
