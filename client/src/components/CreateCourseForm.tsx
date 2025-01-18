@@ -64,7 +64,7 @@ export default function CreateCourseForm() {
       onSubmit={handleSubmit}
       className="flex flex-col items-start justify-center gap-4"
     >
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col space-y-1 w-full">
         <label htmlFor="title" className="font-semibold text-lg">
           Title
         </label>
@@ -81,7 +81,7 @@ export default function CreateCourseForm() {
           Enter the name of the course you want to be created.
         </p>
       </div>
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col space-y-1 w-full">
         <label htmlFor="description" className="font-semibold text-lg">
           Description
         </label>
@@ -91,14 +91,14 @@ export default function CreateCourseForm() {
           required
           value={formData.description}
           onChange={handleChange}
-          className="border border-gray-400 p-2 mb-2 rounded-md"
+          className="border border-gray-400 p-2 mb-2 rounded-md h-40"
         />
         <p className="text-sm text-gray-600">
           Enter any details that you want the course to include.
         </p>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-1 w-full">
         <p className="text-sm text-red-500 font-medium">{error}</p>
         <button
           type="submit"

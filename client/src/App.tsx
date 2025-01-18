@@ -1,13 +1,21 @@
-import Courses from "./components/Courses";
-import Home from "./Home";
+import CoursesPage from "./pages/CoursesPage";
+import Home from "./pages/Home";
 import { Routes, Route } from "react-router";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import CreateCoursePage from "./pages/CreateCoursePage";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" index element={<Home />} />
-      <Route path="courses" element={<Courses />} />
-    </Routes>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" index element={<Home />} />
+        <Route path="courses" element={<CoursesPage />} />
+        <Route path="/create" index element={<CreateCoursePage />} />
+      </Routes>
+      <Footer />
+    </>
   );
 }
 
