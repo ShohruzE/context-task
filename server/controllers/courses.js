@@ -12,6 +12,38 @@ export const getCourses = async (req, res) => {
   }
 };
 
+export const getTopicsByCourseId = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found." });
+    }
+    res.json(course.topics);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getLessonsByTopicId = async (req, res) => {
+  try {
+    const { courseId, topicId } = req.params;
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found." });
+    }
+
+    const topic = course.topics.id(topicId);
+    if (!topic) {
+      return res.status(404).json({ error: "Topic not found." });
+    }
+
+    res.json(topic.lessons);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const createCourse = async (req, res) => {
   try {
     const systemPrompt = `
