@@ -57,9 +57,11 @@ export default function LessonsPage() {
               <span>Back to Topics</span>
             </div>
           </NavLink>
-          <div>
-            <h1 className="text-2xl font-bold">Lessons</h1>
-            <p className="">{}</p>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold">{topic?.title}</h1>
+            <p className="text-lg text-gray-500 font-semibold">
+              {topic?.description}
+            </p>
           </div>
         </div>
         {loading && <Loading />}
