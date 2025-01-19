@@ -49,9 +49,12 @@ export default function CreateCourseForm() {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      setError("Error: " + error);
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+    } catch (error: any) {
+      setError("Error: " + error.message);
       return;
     } finally {
       setLoading(false);

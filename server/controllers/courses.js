@@ -1,7 +1,7 @@
 import Course from "../models/Course.js";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
-import { courseStructureZodSchema } from "../types/course.js";
+import { courseStructureZodSchema, validationSchema } from "../types/course.js";
 
 export const getCourses = async (req, res) => {
   try {
@@ -46,7 +46,70 @@ export const getTopicByCourseId = async (req, res) => {
 
 export const createCourse = async (req, res) => {
   try {
-    const systemPrompt = `
+    const { title, description } = req.body;
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    const input = `Course name: ${title}\nDescription: ${description}\n`;
+
+    const systemPrompt1 = `
+    You are a validation AI specialized in assessing user-provided course information. 
+    Your task is to determine whether the input (course title and description) is valid, 
+    meaningful, ethical, and suitable for creating a structured educational course. 
+    If the input passes validation, the valid property should be true. 
+    If it fails, the valid property should be true and the reason property should provide a clear error message explaining why it is invalid.
+
+    Validation Criteria
+    Meaningfulness:
+      The title and description must contain coherent and understandable text.
+      Gibberish, random strings, or nonsensical phrases should be flagged as invalid.
+
+    Cohesion:
+      The description must align with the title and provide sufficient context to generate a meaningful course structure.
+      Flag inputs that are overly vague, irrelevant, or lack educational potential.
+
+    Ethical Content:
+      Ensure the title and description do not include harmful, unethical, or prohibited content such as:
+      Hate speech
+      Violence
+      Illegal activities
+      Misinformation
+      Content violating societal or cultural norms
+      Examples of unethical content include: "How to Hack Secure Systems" or "Building Harmful Weapons."
+    Actionable Feedback:
+    For invalid inputs, provide actionable feedback such as:
+    "The title and description do not provide enough context for a cohesive course."
+    "The content violates ethical guidelines and cannot be processed."
+
+    Output Schema:
+      {
+        "valid": true | false,
+        "reason": "If invalid, provide a clear explanation for why the input failed validation."
+      }
+    `;
+
+    const validation = await openai.beta.chat.completions.parse({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt1,
+        },
+        {
+          role: "user",
+          content: input,
+        },
+      ],
+      response_format: zodResponseFormat(validationSchema, "validation"),
+    });
+    const validationResponse = validation.choices[0].message.parsed;
+    console.log(validationResponse);
+
+    if (!validationResponse.valid) {
+      return res.status(400).json({ error: validationResponse.reason });
+    }
+
+    const systemPrompt2 = `
     You are a highly advanced AI specialized in curriculum development. Your task is to design a detailed, 
     well-structured course based on the user's provided course title and description. You are simply creating a course for one person, 
     not a class of students or group of people. The course should adhere to the following requirements and schema:
@@ -110,6 +173,8 @@ export const createCourse = async (req, res) => {
         }
 
         Edge Case Handling:
+        Unintelligible Input: If the title or description are not sensical or don't mean anything like gibberish, then refuse the input.
+        Ethics: If the title or description have unethical content, then refuse the input.
         Vague Input: If the title or description is too general (e.g., "Learn AI"), infer a broad curriculum that covers core principles, tools, and real-world applications.
         Unfamiliar or Niche Topics: Break the topic into universally applicable concepts and map them to practical knowledge or skills.
         Overly Complex or Broad Input: Simplify the course by focusing on foundational and intermediate concepts relevant to beginners.
@@ -125,23 +190,12 @@ export const createCourse = async (req, res) => {
                 Content: "This lesson introduces Artificial Intelligence and explains its basic principles, history, and types (narrow AI vs. general AI)."
     `;
 
-    // console.log(req.body);
-
-    const { title, description } = req.body;
-    // console.log(title, description);
-
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const input = `Course name: ${title}\nDescription: ${description}\n`;
-
     const completion = await openai.beta.chat.completions.parse({
       model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: systemPrompt,
+          content: systemPrompt2,
         },
         {
           role: "user",
@@ -150,14 +204,11 @@ export const createCourse = async (req, res) => {
       ],
       response_format: zodResponseFormat(courseStructureZodSchema, "course"),
     });
-    // console.log(completion);
+
     const response = completion.choices[0].message.parsed;
-    // console.log(response);
 
     // Save to mongodb
     const newCourse = await Course.create(response);
-    // console.log(newCourse);
-
     res.status(201).json(newCourse);
   } catch (error) {
     res.status(500).json({ error: error.message });

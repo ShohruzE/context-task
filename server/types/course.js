@@ -17,3 +17,8 @@ export const courseStructureZodSchema = z.object({
   description: z.string(),
   topics: z.array(topicSchema),
 });
+
+export const validationSchema = z.object({
+  valid: z.boolean(),
+  reason: z.string(),
+});
