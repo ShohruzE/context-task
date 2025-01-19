@@ -25,7 +25,7 @@ export default function Lessons({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 * index }}
-          className="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
+          className="block w-full p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
         >
           <NavLink
             to={`/courses/${courseId}/${topicId}/${lesson._id}`}
@@ -33,7 +33,10 @@ export default function Lessons({
             className="flex flex-col justify-between h-full"
           >
             <div className="flex flex-col grow mb-8">
-              <h2 className="mb-2 text-xl font-bold">{lesson.title}</h2>
+              <h2 className="mb-2 text-xl font-bold">
+                Lesson {index + 1}:
+                <span className="font-normal"> {lesson.title}</span>
+              </h2>
               <p className="text-gray-700 text-md">{lesson.description}</p>
             </div>
           </NavLink>

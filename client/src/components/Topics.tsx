@@ -1,6 +1,6 @@
-import { NavLink } from "react-router";
+import { Link } from "react-router";
 import { motion } from "framer-motion";
-import { Book, Users } from "lucide-react";
+import { Book } from "lucide-react";
 
 interface Topic {
   _id: string;
@@ -23,8 +23,6 @@ export default function Topics({
   topics: Topic[];
   courseId: string | undefined;
 }) {
-  console.log("Topics page course id:", courseId);
-
   return (
     <>
       {topics.map((topic: Topic, index: number) => (
@@ -33,18 +31,29 @@ export default function Topics({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 * index }}
-          className="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
+          className="block bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100"
         >
-          <NavLink
-            to={`/courses/${courseId}/${topic._id}`}
-            key={index}
-            className="flex flex-col justify-between h-full"
-          >
+          <div key={index} className="flex flex-col justify-between h-full p-6">
             <div className="flex flex-col grow mb-8">
               <h2 className="mb-2 text-xl font-bold">{topic.title}</h2>
               <p className="text-gray-700 text-md">{topic.description}</p>
             </div>
-          </NavLink>
+            <div className="flex justify-between items-center">
+              <div className="flex justify-center items-center gap-1 text-green-500 font-bold">
+                <Book size={16} />
+                <span>{topic.lessons.length} lessons</span>
+              </div>
+
+              <div>
+                <Link
+                  to={`/courses/${courseId}/${topic._id}`}
+                  className="bg-blue-500 py-2 px-4 rounded-sm text-white font-medium hover:bg-blue-500/80"
+                >
+                  Start Learning
+                </Link>
+              </div>
+            </div>
+          </div>
         </motion.div>
       ))}
     </>
