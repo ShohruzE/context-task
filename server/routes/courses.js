@@ -1,16 +1,16 @@
 import express from "express";
 import {
   getCourses,
-  getTopicsByCourseId,
-  getLessonsByTopicId,
+  getCourseByCourseId,
+  getTopicByCourseId,
   createCourse,
 } from "../controllers/courses.js";
 
 const router = express.Router();
 
 router.get("/", getCourses);
-router.get("/:courseId", getTopicsByCourseId);
-router.get("/:courseId/:topicId", getLessonsByTopicId);
+router.get("/:courseId", getCourseByCourseId);
+router.get("/:courseId/:topicId", getTopicByCourseId);
 router.post("/create", createCourse);
 
 export default router;
