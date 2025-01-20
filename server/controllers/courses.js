@@ -1,7 +1,11 @@
 import Course from "../models/Course.js";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
-import { courseStructureZodSchema, validationSchema } from "../types/course.js";
+import {
+  courseStructureZodSchema,
+  validationSchema,
+  slideSchema,
+} from "../types/course.js";
 
 export const getCourses = async (req, res) => {
   try {
@@ -39,6 +43,34 @@ export const getTopicByCourseId = async (req, res) => {
     }
 
     res.json(topic);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getLessonByIds = async (req, res) => {
+  try {
+    const { courseId, topicId, lessonId } = req.params;
+
+    // Find course
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Find topic
+    const topic = course.topics.id(topicId);
+    if (!topic) {
+      return res.status(404).json({ error: "Topic not found" });
+    }
+
+    // Find lesson
+    const lesson = topic.lessons.id(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+
+    res.json(lesson);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -210,6 +242,62 @@ export const createCourse = async (req, res) => {
     // Save to mongodb
     const newCourse = await Course.create(response);
     res.status(201).json(newCourse);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const createLesson = async (req, res) => {
+  try {
+    const { content } = req.body;
+    console.log(content);
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    const input = `Lesson content: ${content}\n`;
+
+    const systemPrompt = `
+    You are an expert educator tasked with creating educational slides from lesson content.
+    Transform the provided lesson content into a structured series of slides with bullet points.
+    
+    Requirements:
+    - Create 5-8 slides
+    - Each slide should have 3-5 bullet points
+    - Bullet points should contain enough information to convey key concepts. Don't make them too short.
+    - Include a descriptive title for each slide
+    
+    Output Schema:
+    {
+      "slides": [
+        {
+          "title": "Slide Title",
+          "bulletPoints": [
+            "Key point 1",
+            "Key point 2",
+            "Key point 3"
+          ],
+        }
+      ]
+    }`;
+
+    const completion = await openai.beta.chat.completions.parse({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        {
+          role: "user",
+          content: input,
+        },
+      ],
+      response_format: zodResponseFormat(slideSchema, "slides"),
+    });
+
+    const slides = completion.choices[0].message.parsed;
+    console.log(slides);
+    res.status(201).json(slides);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
