@@ -5,6 +5,7 @@ import CreateCoursePage from "./pages/CreateCoursePage";
 import CoursesPage from "./pages/CoursesPage";
 import TopicsPage from "./pages/TopicsPage";
 import LessonsPage from "./pages/LessonsPage";
+import SlidesPage from "./pages/SlidesPage";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -19,6 +20,10 @@ function App() {
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:courseId" element={<TopicsPage />} />
         <Route path="/courses/:courseId/:topicId" element={<LessonsPage />} />
+        <Route
+          path="/courses/:courseId/:topicId/:lessonId"
+          element={<SlidesPage />}
+        />
       </Routes>
       <Footer />
     </>
