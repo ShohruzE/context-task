@@ -26,37 +26,38 @@ Ensure you have the following installed on your machine:
    git clone https://github.com/ShohruzE/context-task.git
    ```
 2. **Set Up the Server**:
-
-  Navigate to the server folder:
+  - Navigate to the server folder:
     ```bash
     cd server
     ```
-  Install dependencies:
+  - Install dependencies:
     ```bash
     npm install
     ```
-  Create a .env file in the root of the server directory with the following variables:
+  - Create a .env file in the root of the server directory with the following variables:
     ```env
     MONGODB_CONNECTION_STRING=your-mongodb-connection-string
     OPENAI_API_KEY=your-openai-api-key
     ```
-  Start the server:
+  - Start the server:
     ```bash
     npm run dev
     ```
+
+    
 3. **Set Up the Client**:
 
-  Navigate to the client folder:
+  - Navigate to the client folder:
   ```bash
   cd ../client
   ```
-  Install dependencies:
+  - Install dependencies:
   ```bash
   npm install
   ```
-  Start the client:
+  - Start the client:
   ```bash
-  npm start
+  npm run dev
   ```
 
 4. **Access the Application**:
