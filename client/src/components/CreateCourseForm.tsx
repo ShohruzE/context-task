@@ -53,12 +53,12 @@ export default function CreateCourseForm() {
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong");
       }
+      navigate("/courses");
     } catch (error: any) {
       setError("Error: " + error.message);
       return;
     } finally {
       setLoading(false);
-      navigate("/courses");
     }
   }
 
