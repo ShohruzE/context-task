@@ -2,6 +2,8 @@
 
 This project is a MERN stack application that generates a course structure using AI based on a given course title and description. It includes a React client for user interaction and a Node.js/Express server that integrates with MongoDB and the OpenAI API to create detailed course plans.
 
+![Project Demo](https://github.com/ShohruzE/context-task/blob/main/Context%20Task.gif)
+
 ## Features
 
 - **AI-Powered Course Generation**: Create structured courses with topics, weekly plans, and lessons using the OpenAI API.
